@@ -1,0 +1,57 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r}
+# import dataset
+clinvar_variants <- read.csv("~/Documents/GitHub/ECL298_2026/Describe_data/clinvar_variants.csv",
+                             na.strings = c("", "NA", ".", " "))
+```
+
+```{r}
+dim(clinvar_variants) 
+```
+This dataset consists of 63,446 variants across 14 variables.
+
+```{r}
+summary(clinvar_variants)
+```
+Missing values were observed in LoFtool, CADD_PHRED, and BLOSUM62.
+
+CHROM: chromosome number.
+POS: genetic position within the chromosome.
+REF: reference allele.
+ALT: alternative allele.
+
+```{r}
+table(clinvar_variants$CLASS)
+```
+CLASS: variant is classified as pathogenic (1) or benign (0).
+
+```{r}
+table(clinvar_variants$Consequence)
+```
+Consequence: it describes the predicted functional effect of each variant on the gene or protein.
+
+
+
+```{r}
+table(clinvar_variants$IMPACT)
+```
+The IMPACT variable categorizes variants into four functional severity levels (HIGH, MODERATE, LOW, and MODIFIER) based on their predicted effects on gene and protein function.
+
+
+Amino_acids: Amino acid change.
+
+AF_EXAC: the alternative allele frequency in population.
+
+SIFT and PolyPhen provide categorical functional predictions, while LoFtool and CADD_PHRED generate continuous scores reflecting gene-level intolerance and variant-level deleteriousness, respectively.
+
+
+BLOSUM62: BLOSUM62 is an evolutionary conservation score that quantifies how frequently a specific amino acid substitution is observed in conserved protein regions. Lower scores indicate less conservative substitutions that are more likely to disrupt protein function.
+
+
+
+
+
