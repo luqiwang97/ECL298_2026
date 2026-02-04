@@ -1,0 +1,67 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r}
+# import dataset
+clinvar_variants <- read.csv("~/Documents/GitHub/ECL298_2026/Describe_data/clinvar_variants.csv",
+                             na.strings = c("", "NA", ".", " "))
+```
+
+```{r}
+colnames(clinvar_variants)
+```
+
+```{r}
+clinvar_variants$CLASS <- factor(
+  clinvar_variants$CLASS,
+  levels = c(0, 1),
+  labels = c("Benign", "Pathogenic")
+)
+```
+
+```{r}
+df <- clinvar_variants[complete.cases(clinvar_variants), ] # no missing values
+```
+
+```{r}
+set.seed(123)
+
+n <- nrow(df)
+train_id <- sample(n, size = 0.7 * n)
+
+# split the dataset
+train_data <- df[train_id, ]
+test_data  <- df[-train_id, ]
+```
+
+```{r}
+library(randomForest)
+rf_fit <- randomForest(
+  CLASS ~ Consequence + IMPACT + Amino_acids + AF_EXAC + SIFT + PolyPhen + 
+    LoFtool + CADD_PHRED + BLOSUM62,
+  data = train_data,
+  importance = TRUE
+)
+```
+
+```{r}
+rf_fit
+```
+```{r}
+pred_class <- predict(rf_fit, newdata = test_data)
+confusion_matrix <- table(Predicted = pred_class, True = test_data$CLASS)
+confusion_matrix
+```
+```{r}
+# Accuracy
+mean(pred_class == test_data$CLASS)
+```
+
+
+```{r}
+# variants importance
+varImpPlot(rf_fit, type = 2)
+```
+
